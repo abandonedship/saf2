@@ -23,4 +23,4 @@ or sudo bash saf2_bin_install.sh to install saf2 tools in /usr/bin/ and make all
 
 # Screenshots
 
-![alt text](https://github.com/0bfxGH0ST/saf2/blob/main/screenshots/screenshot1.png)  
+![alt text](https://github.com/abandonedship/saf2/blob/main/screenshots/screenshot1.png)  
