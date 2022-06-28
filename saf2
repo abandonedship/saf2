@@ -1,0 +1,373 @@
+#!/bin/bash
+
+####################################################################################################
+# saf2 is a powerfull self made multi-purpose CTF script tool written under Kali Linux Os          #
+# taking adventage of several programs pre-installed. Contains one liner backdoors                 #
+# generator for many programs/languages, recognition scanners, and tools from my repositories.     #
+#                                                                                                  #
+#                                                                 by 0bfxgh0st*                    #
+####################################################################################################
+
+if [ $(id -u) != "0" ];
+then
+        printf "%s\n" "This program needs root privilege to run"
+        exit
+fi
+
+COL_GHOST="\e[5;32m"
+COL_RED="\e[0;31m"
+COL_RED_BOLD="\e[1;31m"
+COL_BLUE="\e[0;32m"
+COL_YELLOW="\e[0;33m"
+COL_BOLD="\e[1m"
+COL_MARKDOWN="\e[4m"
+COL_END="\e[0m"
+
+function _header(){
+
+printf "${COL_RED}"
+
+cat <<EOF
+
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢤⣶⣄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⣤⡾⠿⢿⡀⠀⠀⠀⠀⣠⣶⣿⣷⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⢀⣴⣦⣴⣿⡋⠀⠀⠈⢳⡄⠀⢠⣾⣿⠁⠈⣿⡆⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⣰⣿⣿⠿⠛⠉⠉⠁⠀⠀⠀⠹⡄⣿⣿⣿⠀⠀⢹⡇⠀⠀⠀
+⠀⠀⠀⠀⠀⣠⣾⡿⠋⠁⠀⠀⠀⠀⠀⠀⠀⠀⣰⣏⢻⣿⣿⡆⠀⠸⣿⠀⠀⠀
+⠀⠀⠀⢀⣴⠟⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⢠⣾⣿⣿⣆⠹⣿⣷⠀⢘⣿⠀⠀⠀
+⠀⠀⢀⡾⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢰⣿⣿⠋⠉⠛⠂⠹⠿⣲⣿⣿⣧⠀⠀
+⠀⢠⠏⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣤⣿⣿⣿⣷⣾⣿⡇⢀⠀⣼⣿⣿⣿⣧⠀
+⠰⠃⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢠⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⠀⡘⢿⣿⣿⣿⠀
+⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠸⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠀⣷⡈⠿⢿⣿⡆
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠙⠛⠁⢙⠛⣿⣿⣿⣿⡟⠀⡿⠀⠀⢀⣿⡇
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠘⣶⣤⣉⣛⠻⠇⢠⣿⣾⣿⡄⢻⡇
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣿⣿⣿⣿⣦⣤⣾⣿⣿⣿⣿⣆⠁
+
+EOF
+
+printf "${COL_END}"
+
+}
+
+
+function _random_tip(){
+
+	arr[0]="${COL_BLUE}Tip${COL_END}: Type ${COL_MARKDOWN}help${COL_END} to start\n\n"
+	arr[1]="${COL_BLUE}Tip${COL_END}: Type ${COL_MARKDOWN}shellstorm${COL_END} to show shellstorm shells\n\n"
+	arr[2]="${COL_BLUE}Tip${COL_END}: Type ${COL_MARKDOWN}scanners${COL_END} to show available scanners\n\n"
+	arr[3]="${COL_BLUE}Tip${COL_END}: Type ${COL_MARKDOWN}encoders${COL_END} to show available encoders\n\n"
+	arr[4]="${COL_BLUE}Tip${COL_END}: Type ${COL_MARKDOWN}decoders${COL_END} to show available decoders\n\n"
+	arr[5]="${COL_BLUE}Tip${COL_END}: Type ${COL_MARKDOWN}gtfobins${COL_END} to show gtfobins database\n\n"
+	arr[6]="${COL_BLUE}Tip${COL_END}: Type ${COL_MARKDOWN}webscrappers${COL_END} to show available webscrappers\n\n"
+	arr[7]="${COL_BLUE}Tip${COL_END}: Type ${COL_MARKDOWN}exploits${COL_END} to show available exploits\n\n"
+	arr[8]="${COL_BLUE}Tip${COL_END}: Type ${COL_MARKDOWN}post${COL_END} to show available post explotation\n\n"
+
+	rand=$[$RANDOM % ${#arr[@]}]
+	printf "${arr[$rand]}"
+
+}
+
+
+function _scripts_header(){
+
+	scanners=$(ls "$localpath"scanners | wc -l)
+	exploits=$(ls "$localpath"exploits | wc -l)
+	decoders=$(ls "$localpath"decoders | wc -l)
+	stego=$(ls "$localpath"stego | wc -l)
+	autogen=$(ls "$localpath"auto-gen-reverse-bind-tcp | wc -l)
+	encoders=$(ls "$localpath"encoders | wc -l)
+	webscrappers=$(ls "$localpath"webscrappers | wc -l)
+	post_explotation=$(ls "$localpath"post_explotation | wc -l)
+
+	printf "${COL_BOLD}saf2${COL_END} framework v0.2 by -- ${COL_GHOST}0bfxGH0ST*${COL_END}\n"
+
+	# saf2 header
+	printf -- "+${COL_RED}-----------------------------------${COL_END}+\n"
+	printf -- "${COL_RED}|${COL_END} scanners${COL_END}: $scanners          encoders${COL_END}: $encoders  ${COL_RED}|${COL_END}\n"
+	printf -- "${COL_RED}|${COL_END} shellstorm: $autogen        decoders: $decoders  ${COL_RED}|${COL_END}\n"
+	printf -- "${COL_RED}|${COL_END} exploits: $exploits          stego: $stego     ${COL_RED}|${COL_END}\n"
+	printf -- "${COL_RED}|${COL_END} webscrappers: $webscrappers      post: $post_explotation      ${COL_RED}|${COL_END}\n"
+	printf -- "+${COL_RED}-----------------------------------${COL_END}+\n\n"
+
+}
+
+function _internal_help(){
+
+	printf "%s\n"
+	printf "%s\n\n" "Commands:"
+	printf "%s\n" "shellstorm                   List available reverse/bind shell/backdoor generators"
+	printf "%s\n" "decoders                     List available decoders"
+	printf "%s\n" "encoders                     List available encoders"
+	printf "%s\n" "exploits                     List available exploits"
+	printf "%s\n" "post                         List available post explotation scripts"
+	printf "%s\n" "scanners                     List available scanners"
+	printf "%s\n" "stego                        List available steganography programs"
+	printf "%s\n" "webscrappers                 List available webscrappers"
+	printf "%s\n\n" "tools                        List all saf2 tools"
+	printf "%s\n\n" "delete history               Delete program history (Requires program re-run)"
+}
+
+function sa_pseudo_console(){
+
+	history -s -- "$sa_interactive_console" 2>/dev/null
+	history -w /tmp/.saf2_history
+
+	read -e -r -p 'saf2 > ' sa_interactive_console
+
+
+}
+
+########## SYSTEM PATHS ##########
+localpath="/opt/saf2/tools/"     #
+##################################
+
+_header
+_scripts_header
+_random_tip
+
+history -r /tmp/.saf2_history
+
+##################################### MAIN PROGRAM ############################
+
+while [ "$sa_interactive_console" != "exit" ]
+do
+
+	sa_pseudo_console
+
+	if [[ "$sa_interactive_console" == "cd"* ]];
+	then
+		cd_folder=$(printf -- "$sa_interactive_console" | awk '{for (i=2; i<=NF; i++) print $i}')
+		#### variable as a new PWD ##
+		export personal_PWD="$cd_folder"
+		cd $cd_folder
+
+	elif [[ "$sa_interactive_console" == "saf2" ]]
+        then
+                _header
+		_scripts_header
+		_random_tip
+
+	elif [[ "$sa_interactive_console" == "help" ]]
+        then
+		_internal_help
+
+        elif [[ "$sa_interactive_console" == "delete history" ]]
+        then
+		printf "%s\n" "*WARNING* This feature requires re-run saf2 to avoid errors"
+		bash -c "rm -r /tmp/.saf2_history"
+		exit
+		printf "%s\n" "Deleting saf2 history"
+
+	# listing
+
+	elif [[ "$sa_interactive_console" == "tools" ]]
+	then
+		printf "\n[${COL_BLUE}+${COL_END}] Scanners\n\n"
+                ls --format single-column "$localpath"scanners
+		printf "\n[${COL_BLUE}+${COL_END}] Shell/backdoor generators\n\n"
+		ls --format single-column "$localpath"auto-gen-reverse-bind-tcp
+		printf "\n[${COL_BLUE}+${COL_END}] Exploits\n\n"
+		ls --format single-column "$localpath"exploits
+		printf "\n[${COL_BLUE}+${COL_END}] Decoders\n\n"
+                ls --format single-column "$localpath"decoders
+		printf "\n[${COL_BLUE}+${COL_END}] Encoders\n\n"
+                ls --format single-column "$localpath"encoders
+		printf "\n[${COL_BLUE}+${COL_END}] Stego\n\n"
+                ls --format single-column "$localpath"stego
+		printf "\n[${COL_BLUE}+${COL_END}] Webscrappers\n\n"
+                ls --format single-column "$localpath"webscrappers
+		printf "\n[${COL_BLUE}+${COL_END}] Post Explotation\n\n"
+                ls --format single-column "$localpath"post_explotation
+		printf "\n"
+
+
+	elif [[ "$sa_interactive_console" == "scanners" ]]
+	then
+		printf "\n[${COL_BLUE}+${COL_END}] Scanners\n\n"
+		ls --format single-column "$localpath"scanners
+		printf "%s\n"
+
+	elif [[ "$sa_interactive_console" == "exploits" ]]
+        then
+                printf "\n[${COL_BLUE}+${COL_END}] Exploits\n\n"
+                ls --format single-column "$localpath"exploits
+                printf "%s\n"
+
+	elif [[ "$sa_interactive_console" == "decoders" ]]
+        then
+                printf "\n[${COL_BLUE}+${COL_END}] Decoders\n\n"
+                ls --format single-column "$localpath"decoders
+                printf "%s\n"
+
+	elif [[ "$sa_interactive_console" == "encoders" ]]
+        then
+                printf "\n[${COL_BLUE}+${COL_END}] Encoders\n\n"
+                ls --format single-column "$localpath"encoders
+                printf "%s\n"
+
+	elif [[ "$sa_interactive_console" == "stego" ]]
+        then
+                printf "\n[${COL_BLUE}+${COL_END}] Stego\n\n"
+                ls --format single-column "$localpath"stego
+                printf "%s\n"
+
+
+
+	elif [[ "$sa_interactive_console" == "webscrappers" ]]
+        then
+                printf "\n[${COL_BLUE}+${COL_END}] Webscrappers\n\n"
+                ls --format single-column "$localpath"webscrappers
+                printf "%s\n"
+
+	elif [[ "$sa_interactive_console" == "post" ]] || [[ "$sa_interactive_console" == "post explotation" ]]
+        then
+                printf "\n[${COL_YELLOW}+${COL_END}] Post Explotation (Exploits to deploy in target machine, avoid running in your own machine)\n"
+        	printf "Post explotation scripts are stored in /opt/saf2/tools/post_explotation/\n\n"
+	        ls --format single-column "$localpath"post_explotation
+                printf "%s\n"
+
+	# Tools Execution/args handlers
+
+	# shellstorm
+
+	elif [[ "$sa_interactive_console" == "shellstorm"* ]]
+        then
+		bash -c "$localpath"auto-gen-reverse-bind-tcp/"$sa_interactive_console"
+		printf "%s\n"
+
+
+	elif [[ "$sa_interactive_console" == "gtfobins" ]]
+        then
+                bash -c "$localpath"webscrappers/gtfobins
+                printf "%s\n"
+
+	# encoders
+
+	elif [[ "$sa_interactive_console" == "base32encode"* ]]
+        then
+                bash -c "$localpath"encoders/"$sa_interactive_console"
+                printf "%s\n"
+
+
+
+	elif [[ "$sa_interactive_console" == "base64encode"* ]]
+        then
+                bash -c "$localpath"encoders/"$sa_interactive_console"
+                printf "%s\n"
+
+
+	elif [[ "$sa_interactive_console" == "binaryencode"* ]]
+        then
+                bash -c "$localpath"encoders/"$sa_interactive_console"
+                printf "%s\n"
+
+	elif [[ "$sa_interactive_console" == "decimalencode"* ]]
+        then
+                bash -c "$localpath"encoders/"$sa_interactive_console"
+                printf "%s\n"
+
+	elif [[ "$sa_interactive_console" == "hexaencode"* ]]
+        then
+                bash -c "$localpath"encoders/"$sa_interactive_console"
+                printf "%s\n"
+
+	elif [[ "$sa_interactive_console" == "octalencode"* ]]
+        then
+                bash -c "$localpath"encoders/"$sa_interactive_console"
+                printf "%s\n"
+
+	# decoders
+
+	elif [[ "$sa_interactive_console" == "base32decode"* ]]
+        then
+                bash -c "$localpath"decoders/"$sa_interactive_console"
+                printf "%s\n"
+
+
+	elif [[ "$sa_interactive_console" == "base64decode"* ]]
+        then
+                bash -c "$localpath"decoders/"$sa_interactive_console"
+                printf "%s\n"
+
+
+	elif [[ "$sa_interactive_console" == "binarydecode"* ]]
+        then
+                bash -c "$localpath"decoders/"$sa_interactive_console"
+                printf "%s\n"
+
+	elif [[ "$sa_interactive_console" == "decimaldecode"* ]]
+        then
+                bash -c "$localpath"decoders/"$sa_interactive_console"
+                printf "%s\n"
+
+	elif [[ "$sa_interactive_console" == "hexadecode"* ]]
+        then
+                bash -c "$localpath"decoders/"$sa_interactive_console"
+                printf "%s\n"
+
+	elif [[ "$sa_interactive_console" == "octaldecode"* ]]
+        then
+                bash -c "$localpath"decoders"/$sa_interactive_console"
+                printf "%s\n"
+
+	# exploits
+
+	elif [[ "$sa_interactive_console" == "lfi2rce"* ]]
+        then
+                bash -c "$localpath"exploits/"$sa_interactive_console"
+                printf "%s\n"
+
+	elif [[ "$sa_interactive_console" == "UnrealIrcd-3.2.8.1-cve-2010-2075-exploit.sh"* ]]
+        then
+                bash -c "$localpath"exploits/"$sa_interactive_console"
+                printf "%s\n"
+
+	# scanners
+
+	elif [[ "$sa_interactive_console" == "bports.sh"* ]]
+        then
+                bash -c "$localpath"scanners/"$sa_interactive_console"
+                printf "%s\n"
+
+
+	elif [[ "$sa_interactive_console" == "lfisuite"* ]]
+        then
+                bash -c "$localpath"scanners/"$sa_interactive_console"
+                printf "%s\n"
+
+	elif [[ "$sa_interactive_console" == "osd"* ]]
+        then
+                bash -c "$localpath"scanners/"$sa_interactive_console"
+                printf "%s\n"
+
+	elif [[ "$sa_interactive_console" == "pingscan.sh"* ]]
+        then
+                bash -c "$localpath"scanners/"$sa_interactive_console"
+                printf "%s\n"
+
+	elif [[ "$sa_interactive_console" == "pyports.py"* ]]
+        then
+                bash -c "$localpath"scanners/"$sa_interactive_console"
+                printf "%s\n"
+
+	elif [[ "$sa_interactive_console" == "webspider"* ]]
+        then
+                bash -c "$localpath"scanners/"$sa_interactive_console"
+                printf "%s\n"
+
+	# stego
+
+	elif [[ "$sa_interactive_console" == "medusar"* ]]
+        then
+                bash -c "$localpath"stego/"$sa_interactive_console"
+                printf "%s\n"
+
+	else
+		printf "%s\n"
+		bash -c "$sa_interactive_console"
+		printf "%s\n"
+	fi
+
+done
+
+########################## END OF MAIN PROGRAM ##############################

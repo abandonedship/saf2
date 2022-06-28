@@ -1,0 +1,41 @@
+#!/bin/bash
+
+###
+# THIS SCRIPT DOESNT CONTAIN A CLEAN OUTPUT
+###
+
+function usage(){
+
+	printf "Usage\nbash binaryencode -s \"Hello world\"\n"
+        printf "bash binaryencode -f \"/home/user/filetoencode.txt\"\n"
+        printf "\nOptions:\n"
+        printf "%s\n" "-s            Encode string to binary"
+        printf "%s\n\n" "-f            Encode file to binary"
+	printf "%s\n" "for complex strings that need scape"
+        printf "%s\n" "save the string you want to encode to a file"
+        printf "%s\n" "and use -f flag to avoid errors"
+
+
+}
+
+if [[ -z "$1" ]] || [[ -z "$2" ]]
+then
+        usage
+	exit
+fi
+
+
+if [[ "$1" == "-s" ]]
+then
+        printf "\nEncoding string $2 to binary\n"
+        binary_encode_string=$(printf "$2" | xxd -b)
+	printf "$binary_encode_string"
+fi
+
+
+if [[ "$1" == "-f" ]]
+then
+        printf "\nEncoding file $2 to binary\n"
+	binary_encode_file=$(xxd "$2")
+        printf "$binary_encode_file"
+fi

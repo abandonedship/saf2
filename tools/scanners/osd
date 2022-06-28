@@ -1,0 +1,27 @@
+#!/bin/bash
+#################################################################
+# os detection script ping/grep/sed based                       #
+# More info at https://subinsb.com/default-device-ttl-values/   #
+#################################################################
+
+function _os_detection_(){
+
+	if [ -z "$1" ]
+	then
+		printf "Usage osd 10.0.2.14\n"
+		exit
+	fi
+
+	osdetection=$(ping -c 1 -W 2 "$1" | grep -o "ttl=..." | sed 's/ttl=//g')
+	
+	if [ "$osdetection" -le "66" ]
+	then
+		printf "Linux (99%%)\n"
+	elif [ "$osdetection" -le "129" ]
+	then
+		printf "Windows (99%%)\n"
+	fi
+
+}
+
+_os_detection_ "$1"

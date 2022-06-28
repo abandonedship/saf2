@@ -1,0 +1,53 @@
+#!/bin/bash
+
+####################### 151 040 OCTAL NOTATION ###################################################################################################################
+
+toconvert="$1"
+
+if [ -z "$1" ]
+then
+	printf "Usage bash octaldecode \"110 145 154 154 157 40 167 157 162 154 144\"\n"
+	exit
+fi
+
+
+function Octal-to-string(){
+
+	octalvalid='^[0-7]+$'
+
+	if [[ $toconvert =~ $octalvalid ]] || [[ $toconvert == *" "* ]];
+	then
+
+        	if [[ $toconvert == *" "* ]];
+	        then
+
+        	        printf "Octal: "
+			for i in $toconvert
+                	do
+                        	printf "\\$i"
+                	done
+       
+	 	printf "\n"
+
+
+        	else
+                	printf  "Octal: "
+			################ -- WARNING TWO CHARS WILL NOT READ ERROR -- this comand read 3 characters, awk add slashes between each 3 and sed deletes last slash tail problems
+			###### substitute me by a loop that makes same function when u can pls
+                	octal_nospaces=$(printf "$toconvert" | sed 's/.../&\\/g;s/:$//' | awk '{print "\\"$1}' | sed 's/.$//')
+                	printf "$octal_nospaces"
+                	printf "\n"
+                	############################################################
+			printf "Tried octal without spaces\n"
+
+        	fi
+
+	else
+        	printf "\n"
+
+	fi
+	###############################
+
+}
+
+Octal-to-string "$1"

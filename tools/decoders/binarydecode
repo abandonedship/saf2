@@ -1,0 +1,30 @@
+#!/bin/bash
+
+if [ -z "$1" ]
+then
+	printf "Usage bash binarydecode \"01001000 01100101 01101100 01101100 01101111 00100000 01110111 01101111 01110010 01101100 01100100\"\n"
+	exit
+fi
+
+
+function Binary-to-string(){
+	toconvert="$1"
+
+	##################### 010000001 BINARY NOTATION ###################################################################################################################
+	binvalid='^[0-1]+$'
+
+	if [[ $toconvert =~ $binvalid ]] || [[ $toconvert == *" "* ]]
+	then
+		printf "Binary: "
+	        ############## BINARY TO ASCII   --$((2#$a)) is binary to decimal conversion in bash, and the printf will convert this to hex. Then just pipe it to xxd and get the value
+        	for a in $toconvert; do printf "%x" $((2#$a)); done 2> /dev/null | xxd -r -p
+	        ##################################################################
+        	printf "\n"
+	fi
+###################################################################################################################################################################
+
+}
+
+
+Binary-to-string "$1"
+

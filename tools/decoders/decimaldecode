@@ -1,0 +1,30 @@
+#!/bin/bash
+
+if [ -z "$1" ]
+then
+	printf "Usage bash decimaldecode \"72 101 108 108 111 32 119 111 114 108 100\"\n"
+	exit
+fi
+
+
+function Decimal-to-string(){
+
+	toconvert="$1"
+
+	###################### 69 70 150 DECIMAL NOTATION #################################################################################################################
+	decimalvalid='^[0-9]+$'
+
+	if [[ $toconvert =~ $decimalvalid ]] || [[ $toconvert == *" "* ]];
+	then
+       		printf "Decimal: "
+        	for i in $toconvert
+        	do
+                	printf "$i" | awk '{printf("%c",$0)}'
+		done
+        printf "\n"
+
+	fi
+
+}
+
+Decimal-to-string "$1"

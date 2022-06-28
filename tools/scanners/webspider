@@ -1,0 +1,116 @@
+#!/bin/bash
+
+################
+# webspider    #
+# by 0bfxgh0st #
+################
+
+COL_BLUE="\e[0;32m"
+COL_RED="\e[0;31m"
+COL_END="\e[0m"
+
+###########################################################################################################
+function _help_(){
+	printf "%s\n" "Webspider v0.1"
+	printf "%s\n" "Automated recon script"
+	printf "%s\n" "Usage webspider <host>"
+}
+###########################################################################################################
+
+#################################
+tmp_dir="/tmp/webspider_logs/"
+portscan_file="/tmp/webspider_logs/portscan.log"
+target_host="$1"
+hardcoded_wordlist="/usr/share/dirb/wordlists/common.txt"
+rm -r "$tmp_dir" 2>/dev/null
+mkdir "$tmp_dir" 2>/dev/null
+###############################################
+
+####################### Nmap scan #########################
+if [[ "$1" == *"."* ]];
+then
+	nmap -T5 -A "$1" -p- --min-rate 1000 -o "$portscan_file"
+else
+	_help_
+	exit
+fi
+###########################################################
+
+############################################################
+find_open=$(cat "$portscan_file" | grep "open" | grep -v "|")
+find_webservice=$(cat "$portscan_file" | grep "open" | grep "http" | grep -v "|")
+find_smb_service=$(cat "$portscan_file" | grep "smb")
+find_ftp_anon=$(cat "$portscan_file" | grep "ftp\|anon\|Anonymous")
+find_mysql=$(cat "$portscan_file" | grep "mysql")
+mysql_ports=$(cat "$portscan_file" | grep "open" | grep "mysql" | awk -F'/' '{print $1}')
+################################################################################################
+
+function _recon_(){
+
+	http_ports=$(printf "$find_open" | grep "http")
+	websrv_port=$(printf "$http_ports" | awk -F'/' '{print $1}')
+	printf -- "\n[${COL_BLUE}+${COL_END}] Open ports\n"
+        printf -- "$find_open\n"
+	printf -- "\n[${COL_BLUE}+${COL_END}] Web services found\n"
+        printf -- "$find_webservice\n\n"
+	if [[ "$find_smb_service" == *"smb"* ]];
+	then
+		printf "[${COL_BLUE}+${COL_END}] SMB\n"
+		_smb_ "$1"
+	fi
+	_mysql_loop_
+	printf -- "\n"
+	printf "[${COL_BLUE}+${COL_END}] FUZZIN"
+	################ LOOP FOR RECON WEB SERVICES ################
+	#
+	for i in $websrv_port
+	do
+		###################################################
+                dirb http://"$target_host:$i" "$hardcoded_wordlist" -o "$tmp_dir$target_host:$i.common.log"
+		###################################################
+		printf -- "\n\n"
+                cat "$tmp_dir$target_host:$i.common.log" | grep "DIRECTORY\|+" | sort >> "$tmp_dir$target_host:$i.interestingdirs.log"
+		####################################################
+	done
+
+}
+
+function _smb_(){
+##############################################
+	### SMBMAP ####
+	smbmap -H "$1" 2>&1 | tee "$tmp_dir$target_host.smbmap.log"
+	###############
+	### SMBCLIENT ###
+	# this is to connect if you know some credentials...lets give a try
+	#
+	# \\\\192.168.1.54\\Anonymous
+	#
+	#################
+	#########################################################################
+}
+
+function _mysql_loop_(){
+	for j in $mysql_ports
+	do
+	############################ PHP SCRIPT ONE LINE TO CHECK DEFAULT CREDENTIALS CONNECTION TO MYSQL DATABASE <HOST>,'root','','mysql' #######################
+		php -r "\$db = mysqli_connect(\"$target_host:$j\",'root','','mysql');if (\$db){	echo(\"\n[${COL_BLUE}+${COL_END}] [mysql] Access granted to mysql database as root with blank credentials on $target_host:$j\" . \"\n\");}else{	echo(\"\n[${COL_RED}-${COL_END}] [mysql] Denied access on $target_host:$j\" . \"\n\");};" 2>/dev/null | tee "$tmp_dir$target_host.mysqldb.log"
+	done
+}
+
+
+if [[ "$find_open" == *"http"* ]];
+then
+	_recon_ "$1"
+	exit
+fi
+
+if [[ "$find_smb_service" == *"smb"* ]];
+then
+	printf "\n[${COL_BLUE}+${COL_END}] SMB\n"
+	_smb_ "$1"
+fi
+
+if [[ "$find_mysql" == *"mysql"* ]];
+then
+	_mysql_loop_
+fi

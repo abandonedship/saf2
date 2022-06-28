@@ -1,0 +1,64 @@
+#!/bin/bash
+
+### notes 56 56 56 notation doesnt allow no spaces
+
+
+if [ -z "$1" ]
+then
+	printf "Usage\n"
+	printf "bash hexadecode \"48 65 6c 6c 6f 20 77 6f 72 6c 64\"\n"
+	printf "bash hexadecode \"0x48 0x65 0x6c 0x6c 0x6f 0x20 0x77 0x6f 0x72 0x6c 0x64\"\n"
+	printf "bash hexadecode \"\\\x48 \\\x65 \\\x6c \\\x6c \\\x6f \\\x20 \\\x77 \\\x6f \\\x72 \\\x6c \\\x64\"\n"
+	exit
+fi
+
+
+function Hexadecimal-to-string(){
+
+	toconvert="$1"
+
+	####################### 0X56 HEX NOTATION #########################################################################################################################
+	if [[ "$toconvert" == *"0x"* ]];
+	then
+        	printf "$toconvert" | xxd -r
+        	printf "\n"
+	fi
+	###################################################################################################################################################################
+
+
+	####################### \x56 HEX NOTATION #########################################################################################################################
+	if [[ "$toconvert" == *"\x"* ]];
+	then
+
+		function processing_slash_x_hexa(){
+
+			rm -r /tmp/tmpfile 2>/dev/null
+			for i in $toconvert
+			do
+				printf "\\$i" >> /tmp/tmpfile
+			done
+			sed -i -e 's/^/printf "/g' /tmp/tmpfile
+			sed -i -e 's/$/"/g' /tmp/tmpfile
+			bash /tmp/tmpfile
+			rm -r /tmp/tmpfile 2>/dev/null
+		}
+
+		processing_slash_x_hexa
+
+	fi
+	###################################################################################################################################################################
+
+
+	####################### 56 HEX NOTATION ###########################################################################################################################
+	valid_chars='^[0-9]+$'
+
+	if [[ $toconvert =~ $valid_chars ]] || [[ $toconvert == *" "* ]] ;
+	then
+        	printf "$toconvert" | tr -d " " | python -c "import sys; import binascii;print(binascii.unhexlify(sys.stdin.read().strip()).decode());" 2> /dev/null
+	fi
+
+}
+
+
+printf "Hexadecimal: "
+Hexadecimal-to-string "$1"

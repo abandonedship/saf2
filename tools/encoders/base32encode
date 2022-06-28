@@ -1,0 +1,35 @@
+#!/bin/bash
+
+
+function usage(){
+
+	printf "bash base32encode -s \"Hello world\"\n"
+	printf "bash base32encode -f \"/home/user/filetoencode.txt\"\n"
+	printf "\nOptions:\n"
+	printf "%s\n" "-s            Encode string"
+	printf "%s\n\n" "-f            Encode file"
+	printf "%s\n" "for complex strings that need scape"
+        printf "%s\n" "save the string you want to encode to a file"
+        printf "%s\n" "and use -f flag to avoid errors"
+	exit
+
+}
+
+if [[ -z "$1" ]] || [[ -z "$2" ]]
+then
+	usage
+fi
+
+
+if [[ "$1" == "-s" ]]
+then
+	printf "\nEncoding string $2\n\n"
+	printf "$2" | base32
+
+fi
+
+if [[ "$1" == "-f" ]]
+then
+	printf "\nEncoding file $2\n\n"
+	cat "$2" | base32
+fi
